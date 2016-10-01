@@ -44,6 +44,14 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.mongodb.morphia/morphia -->
+		<dependency>
+			<groupId>org.mongodb.morphia</groupId>
+			<artifactId>morphia</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -55,5 +63,12 @@
 		</plugins>
 	</build>
 
+
+	<repositories>
+		<repository>
+			<id>Mvn repo for morphia</id>
+			<url>https://mvnrepository.com/artifact/org.mongodb.morphia/morphia</url>
+		</repository>
+	</repositories>
 
 </project>
