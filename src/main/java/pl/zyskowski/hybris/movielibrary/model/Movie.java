@@ -3,8 +3,11 @@ package pl.zyskowski.hybris.movielibrary.model;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Property;
 
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Date;
 
@@ -15,6 +18,8 @@ public class Movie  {
     private ObjectId id;
 
     @Property
+    @Indexed(unique = true)
+    @Size(min=3, max=50, message = "Movie title lenght must be between {min} and {max}")
     private String title;
 
     @Property
