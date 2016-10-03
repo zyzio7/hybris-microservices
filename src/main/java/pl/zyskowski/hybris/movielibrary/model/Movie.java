@@ -6,10 +6,10 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Property;
 
-import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
-import java.util.Collection;
-import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity("movies")
 public class Movie  {
@@ -23,7 +23,10 @@ public class Movie  {
     private String title;
 
     @Property
-    private Double rating;
+    private Map<String, Double> ratings = new HashMap();
+
+    @Property
+    private Double averageRating;
 
     @Property
     private String director;
@@ -32,7 +35,9 @@ public class Movie  {
     private Collection<String> actors;
 
     @Property
-    private Date createdAt;
+    private String createdAt;
+
+    private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
     public ObjectId getId() {
         return id;
@@ -50,12 +55,8 @@ public class Movie  {
         this.title = title;
     }
 
-    public Double getRating() {
-        return rating;
-    }
-
-    public void setRating(Double rating) {
-        this.rating = rating;
+    public Map<String, Double> getRatings() {
+        return ratings;
     }
 
     public String getDirector() {
@@ -75,10 +76,31 @@ public class Movie  {
     }
 
     public Date getCreatedAt() {
-        return createdAt;
+        return new Date(createdAt);
+    }
+
+    public void addRating(String userId, Double value) {
+        ratings.put(userId, value);
+        averageRating = calculateAverageRating();
+    }
+
+    private Double calculateAverageRating() {
+        OptionalDouble collect = ratings.values().stream().mapToDouble(Number::doubleValue).average();
+        if(collect.isPresent())
+            return collect.getAsDouble();
+        else
+            return 0.0;
     }
 
     public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+        this.createdAt = formatter.format(createdAt);
+    }
+
+    public Double getAverageRating() {
+        return averageRating;
+    }
+
+    private void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
     }
 }
