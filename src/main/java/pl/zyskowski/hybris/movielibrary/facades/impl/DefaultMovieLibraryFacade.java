@@ -1,5 +1,6 @@
 package pl.zyskowski.hybris.movielibrary.facades.impl;
 
+import org.springframework.social.facebook.api.User;
 import org.springframework.stereotype.Component;
 import pl.zyskowski.hybris.database.MoviesDAO;
 import pl.zyskowski.hybris.movielibrary.facades.MovieLibraryFacade;
@@ -39,26 +40,19 @@ public class DefaultMovieLibraryFacade implements MovieLibraryFacade {
         Optional.ofNullable(movie.getActors()).ifPresent(e -> updatedMovie.setActors(e));
         Optional.ofNullable(movie.getDirector()).ifPresent(e -> updatedMovie.setDirector(e));
         Optional.ofNullable(movie.getCreatedAt()).ifPresent(e -> updatedMovie.setCreatedAt(e));
-        Optional.ofNullable(movie.getRating()).ifPresent(e -> updatedMovie.setRating(e));
         dao.updateMovie(updatedMovie);
 
         return updatedMovie;
     }
 
     @Override
-    public Movie rate(String title, Double rating) {
-
-        return null;
+    public Movie rate(final Movie movie, final User user, final Double rating) {
+        return dao.rateMovie(movie, user, rating);
     }
 
     @Override
-    public Movie get(String title) throws Exception{
+    public Movie get(final String title) throws Exception{
         return Optional.ofNullable(dao.getMovie(title)).orElseThrow(() -> new Exception(String.format(MOVIE_NOT_FOUND, title)));
-    }
-
-    @Override
-    public List<Movie> getByCategory(String title) throws Exception {
-        return null;
     }
 
     @Override
