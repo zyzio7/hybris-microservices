@@ -1,8 +1,8 @@
-package pl.zyskowski.hybris.authentication;
+package pl.zyskowski.hybris.access;
 
 import org.apache.commons.io.IOUtils;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import pl.zyskowski.hybris.service.UrlContainer;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -10,7 +10,7 @@ import java.net.URL;
 @Component
 public class OAuthCodeToAccessToken {
 
-    final String redirectUri = "http://local.host:8080/home";
+    final String redirectUri = UrlContainer.getFacebookRedirect();
     final String client_id = "341661419558486";
     final String client_secret = "91ea55d3d4dc64d2610d3aa207c1de87";
 
@@ -20,13 +20,13 @@ public class OAuthCodeToAccessToken {
             "&client_secret=%s" +
             "&code=%s";
 
-    public String exchangeForAccessToken(final String oAuthCode) throws Exception {
+    public String convert(final String oAuthCode) throws Exception {
 
         final String readyUrl = String.format(url, client_id, redirectUri, client_secret, oAuthCode);
         final HttpURLConnection con = (HttpURLConnection) new URL(readyUrl).openConnection();
         final String response = IOUtils.toString(con.getInputStream(), "UTF-8");
-        final String turboToken = response.split("&")[0].split("=")[1];
-        return turboToken;
+        final String accessToken = response.split("&")[0].split("=")[1];
+        return accessToken;
     }
 
 }

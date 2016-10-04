@@ -1,11 +1,11 @@
-package pl.zyskowski.hybris.movielibrary.facades.impl;
+package pl.zyskowski.hybris.service.impl;
 
 import org.springframework.social.facebook.api.User;
 import org.springframework.stereotype.Component;
-import pl.zyskowski.hybris.database.MoviesDAO;
-import pl.zyskowski.hybris.movielibrary.facades.MovieLibraryFacade;
-import pl.zyskowski.hybris.movielibrary.model.Movie;
-import pl.zyskowski.hybris.movielibrary.utils.OrderBy;
+import pl.zyskowski.hybris.access.MoviesDAO;
+import pl.zyskowski.hybris.model.Movie;
+import pl.zyskowski.hybris.model.OrderBy;
+import pl.zyskowski.hybris.service.MovieLibraryFacade;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,8 +25,8 @@ public class DefaultMovieLibraryFacade implements MovieLibraryFacade {
     }
 
     @Override
-    public void remove(final String title) throws Exception{
-        MoviesDAO.getInstance().remove(title);
+    public void remove(final User user, final String title) throws Exception{
+        MoviesDAO.getInstance().remove(user, title);
     }
 
     @Override
@@ -46,8 +46,8 @@ public class DefaultMovieLibraryFacade implements MovieLibraryFacade {
     }
 
     @Override
-    public Movie rate(final Movie movie, final User user, final Double rating) {
-        return dao.rateMovie(movie, user, rating);
+    public Movie rate(final String title, final User user, final Double rating) {
+        return dao.rateMovie(title, user, rating);
     }
 
     @Override

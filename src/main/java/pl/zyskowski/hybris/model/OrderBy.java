@@ -1,4 +1,4 @@
-package pl.zyskowski.hybris.movielibrary.utils;
+package pl.zyskowski.hybris.model;
 
 public enum OrderBy {
     RATING,

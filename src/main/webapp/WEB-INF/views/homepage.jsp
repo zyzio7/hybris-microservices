@@ -17,7 +17,7 @@
         <col>
             <div class="row">
                 <div class="col-sm-12">
-                    <a class="login-facebook-btn" href="https://www.facebook.com/dialog/oauth?client_id=341661419558486&redirect_uri=http://local.host:8080/home">
+                    <a class="login-facebook-btn" href="https://www.facebook.com/dialog/oauth?client_id=341661419558486&redirect_uri=${redirectUrl}">
                         <img src="images/FacebookButton.png" align="middle">
                     </a>
                 </div>

@@ -1,15 +1,10 @@
-package pl.zyskowski.hybris.movielibrary.model;
+package pl.zyskowski.hybris.model;
 
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Indexed;
-import org.mongodb.morphia.annotations.Property;
+import org.mongodb.morphia.annotations.*;
 
 import javax.validation.constraints.Size;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Entity("movies")
 public class Movie  {
@@ -21,6 +16,10 @@ public class Movie  {
     @Indexed(unique = true)
     @Size(min=3, max=50, message = "Movie title lenght must be between {min} and {max}")
     private String title;
+
+    @Property
+    @Indexed
+    private String addedBy;
 
     @Property
     private Map<String, Double> ratings = new HashMap();
@@ -35,9 +34,11 @@ public class Movie  {
     private Collection<String> actors;
 
     @Property
-    private String createdAt;
+    private Date createdAt;
 
-    private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    @Property
+    private Category category;
+
 
     public ObjectId getId() {
         return id;
@@ -76,11 +77,12 @@ public class Movie  {
     }
 
     public Date getCreatedAt() {
-        return new Date(createdAt);
+        return createdAt;
     }
 
+    static Integer counter = 1;
     public void addRating(String userId, Double value) {
-        ratings.put(userId, value);
+        ratings.put(userId + (counter++), value);
         averageRating = calculateAverageRating();
     }
 
@@ -93,7 +95,7 @@ public class Movie  {
     }
 
     public void setCreatedAt(Date createdAt) {
-        this.createdAt = formatter.format(createdAt);
+        this.createdAt = createdAt;
     }
 
     public Double getAverageRating() {
@@ -102,5 +104,21 @@ public class Movie  {
 
     private void setAverageRating(Double averageRating) {
         this.averageRating = averageRating;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public String getAddedBy() {
+        return addedBy;
+    }
+
+    public void setAddedBy(String addedBy) {
+        this.addedBy = addedBy;
     }
 }

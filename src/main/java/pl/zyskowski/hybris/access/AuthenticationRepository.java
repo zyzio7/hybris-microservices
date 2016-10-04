@@ -1,4 +1,4 @@
-package pl.zyskowski.hybris.authentication;
+package pl.zyskowski.hybris.access;
 
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.User;

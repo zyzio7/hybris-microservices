@@ -1,19 +1,23 @@
-package pl.zyskowski.hybris.database;
+package pl.zyskowski.hybris.access;
 
 import com.mongodb.*;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.Query;
-import pl.zyskowski.hybris.movielibrary.model.Movie;
-import pl.zyskowski.hybris.movielibrary.utils.OrderBy;
+import org.springframework.social.facebook.api.User;
+import pl.zyskowski.hybris.model.Category;
+import pl.zyskowski.hybris.model.Movie;
+import pl.zyskowski.hybris.model.OrderBy;
+import pl.zyskowski.hybris.service.UrlContainer;
 
-import javax.validation.Valid;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 public class MoviesDAO {
 
-    private static String dbUrl = Optional.ofNullable(System.getenv("MONGODB_URI")).orElse("localhost");
+    private static String dbUrl = UrlContainer.getDbUrl();
     private static MoviesDAO ourInstance = new MoviesDAO();
     private Datastore datastore;
 
@@ -38,8 +42,9 @@ public class MoviesDAO {
         return movie;
     }
 
-    public void remove(final String title) throws Exception {
+    public void remove(final User user, final String title) throws Exception {
         final Movie movie = getMovie(title);
+        if (user.getId().equals(movie.getAddedBy()))
         if (movie != null)
             datastore.delete(movie);
         else
@@ -58,16 +63,22 @@ public class MoviesDAO {
         return datastore.createQuery(Movie.class).order(orderBy.toString()).asList();
     }
 
-
-
-
-    public void test() {
+    public void prepareTestData() {
         Movie movie = new Movie();
-        movie.setTitle("pila");
-        movie.setRating(3.53);
+        movie.setTitle("The Green Mile");
+        movie.setCreatedAt(new Date());
+        movie.setCategory(Category.THRILLER);
+        String[] actors = new String[]{"Paul Edgecombe", "John Coffey"};
+        movie.setActors( Arrays.asList(actors));
         datastore.save(movie);
 
-        final Query<Movie> query = datastore.createQuery(Movie.class);
-        final List<Movie> employees = query.asList();
+
+    }
+
+    synchronized public Movie rateMovie(final String title, final User user, Double rating) {
+        final Movie dbMovie = getMovie(title);
+        dbMovie.addRating(user.getId(), rating);
+        datastore.save(dbMovie);
+        return dbMovie;
     }
 }
