@@ -1,6 +1,7 @@
 package pl.zyskowski.hybris.access;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import pl.zyskowski.hybris.service.UrlContainer;
 
@@ -11,8 +12,12 @@ import java.net.URL;
 public class OAuthCodeToAccessToken {
 
     final String redirectUri = UrlContainer.getFacebookRedirect();
-    final String client_id = "341661419558486";
-    final String client_secret = "91ea55d3d4dc64d2610d3aa207c1de87";
+
+    @Value("${spring.social.facebook.appId}")
+    String client_id;
+
+    @Value("${spring.social.facebook.appSecret}")
+    String client_secret;
 
     final String url = "https://graph.facebook.com/oauth/access_token?" +
             "client_id=%s" +

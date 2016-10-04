@@ -14,7 +14,7 @@ public class UrlContainer {
 
     static public String getDbUrl() {
         if(remoteServer) return System.getenv("MONGODB_URI");
-        else return getServerAddress();
+        else return "mongodb://" + LOCAL_HOST;
     }
 
     static public String getServerAddress() {
