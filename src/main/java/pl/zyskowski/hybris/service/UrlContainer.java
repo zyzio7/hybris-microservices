@@ -7,7 +7,7 @@ import java.util.Optional;
 @Component
 public class UrlContainer {
 
-    static private Boolean remoteServer = System.getenv("MONGODB_URI") != null;
+    private static Boolean remoteServer = System.getenv("MONGODB_URI") != null;
     private static String SERVER_HOST = "hybris-microservices.herokuapp.com";
     private static String LOCAL_HOST = "localhost";
     private static String LOCAL_PORT = "8080";
