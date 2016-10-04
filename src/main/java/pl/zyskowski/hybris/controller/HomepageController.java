@@ -22,7 +22,7 @@ public class HomepageController {
     @Autowired
     private OAuthCodeToAccessToken oAuthCodeToAccessToken;
 
-    @Value("${clientId}")
+    @Value("${spring.social.facebook.appId}")
     String clientId;
 
     @RequestMapping(value = "/home", method = RequestMethod.GET)
