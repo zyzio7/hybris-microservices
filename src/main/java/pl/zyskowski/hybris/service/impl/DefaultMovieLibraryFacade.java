@@ -18,15 +18,12 @@ public class DefaultMovieLibraryFacade implements MovieLibraryFacade {
 
     @Override
     public Movie add(final Movie movie) throws Exception {
-        Integer titleLength = Optional.ofNullable(movie.getTitle()).map(e -> e.length()).orElse(0);
-        if (titleLength < 3 || titleLength > 50)
-            throw new Exception("Title length should be between 3 and 50");
         return dao.addMovie(movie);
     }
 
     @Override
     public void remove(final User user, final String title) throws Exception{
-        MoviesDAO.getInstance().remove(user, title);
+        dao.remove(user, title);
     }
 
     @Override

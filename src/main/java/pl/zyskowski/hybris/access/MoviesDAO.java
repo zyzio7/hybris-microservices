@@ -28,6 +28,7 @@ public class MoviesDAO {
     private MoviesDAO() {
         final Morphia morphia = new Morphia();
         morphia.mapPackage("pl.zyskowski.hybris.movielibrary.model");
+        System.out.println("DB URL TO: " + dbUrl);
         datastore = morphia.createDatastore(new MongoClient(dbUrl), "movielibrary");
         datastore.ensureIndexes();
     }
