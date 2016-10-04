@@ -1,6 +1,7 @@
 package pl.zyskowski.hybris.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,9 @@ public class HomepageController {
     @Autowired
     private OAuthCodeToAccessToken oAuthCodeToAccessToken;
 
+    @Value("${clientId}")
+    String clientId;
+
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public String homepage(@RequestParam(required = false) String code, Model model) throws Exception {
 
@@ -29,6 +33,7 @@ public class HomepageController {
             final String innerToken = authenticationRepository.addCredential(accessToken);
             model.addAttribute("accesstoken", innerToken);
         }
+        model.addAttribute("clientId", clientId);
         model.addAttribute("redirectUrl", UrlContainer.getFacebookRedirect());
 
         return "homepage";
