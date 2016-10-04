@@ -9,11 +9,9 @@ import pl.zyskowski.hybris.model.Category;
 import pl.zyskowski.hybris.model.Movie;
 import pl.zyskowski.hybris.model.OrderBy;
 import pl.zyskowski.hybris.service.UrlContainer;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public class MoviesDAO {
 
@@ -29,7 +27,7 @@ public class MoviesDAO {
         final Morphia morphia = new Morphia();
         morphia.mapPackage("pl.zyskowski.hybris.movielibrary.model");
         System.out.println("DB URL TO: " + dbUrl);
-        datastore = morphia.createDatastore(new MongoClient(dbUrl), "movielibrary");
+        datastore = morphia.createDatastore(new MongoClient(new MongoClientURI(dbUrl)), "movielibrary");
         datastore.ensureIndexes();
     }
 
