@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class UrlContainer {
 
-    @Value("${SERVER_ADDRESS}")
+    @Value("${server.url}")
     private static String SERVER_ADDRESS;
 
-    @Value("${DB_ADDRESS")
+    @Value("${mongo.url}")
     private static String DB_ADDRESS;
 
     static public String getDbUrl() {
