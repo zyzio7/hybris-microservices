@@ -3,7 +3,7 @@ package pl.zyskowski.hybris.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.facebook.api.User;
 import org.springframework.stereotype.Component;
-import pl.zyskowski.hybris.access.MoviesDAO;
+import pl.zyskowski.hybris.database.MoviesDAO;
 import pl.zyskowski.hybris.model.Movie;
 import pl.zyskowski.hybris.model.OrderBy;
 import pl.zyskowski.hybris.service.MovieLibraryFacade;
