@@ -7,20 +7,20 @@ import org.springframework.stereotype.Component;
 public class UrlContainer {
 
     @Value("${server.url}")
-    private static String SERVER_ADDRESS;
+    private String SERVER_ADDRESS;
 
     @Value("${mongo.url}")
-    private static String DB_ADDRESS;
+    private String DB_ADDRESS;
 
-    static public String getDbUrl() {
+    public String getDbUrl() {
         return DB_ADDRESS;
     }
 
-    static public String getServerAddress() {
+    public String getServerAddress() {
         return SERVER_ADDRESS;
     }
 
-    static public String getFacebookRedirect() {
+    public String getFacebookRedirect() {
         StringBuilder sb = new StringBuilder();
         sb.append("http://");
         sb.append(getServerAddress());
