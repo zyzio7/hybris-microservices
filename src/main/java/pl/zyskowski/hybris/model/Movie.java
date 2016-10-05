@@ -8,14 +8,14 @@ import javax.validation.constraints.Size;
 import java.text.DecimalFormat;
 import java.util.*;
 
-@Entity("tabela")
+@Entity("movie")
 public class Movie  {
 
     @Id
     private ObjectId id;
 
-//    @Size(min=3, max=50, message = "Movie title lenght must be between {min} and {max}")
     @Property
+    @Size(min=3, max=50, message = "Movie title lenght must be between {min} and {max}")
     @Indexed(unique = true)
     private String title;
 

@@ -1,9 +1,10 @@
-package pl.zyskowski.hybris.access;
+package pl.zyskowski.hybris.database;
 
 import com.mongodb.*;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.Query;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.social.facebook.api.User;
 import org.springframework.stereotype.Service;
 import pl.zyskowski.hybris.model.Category;
@@ -19,9 +20,16 @@ import java.util.List;
 @Service
 public class MoviesDAO {
 
-    private static String dbUrl = UrlContainer.getDbUrl();
     private static MoviesDAO ourInstance = new MoviesDAO();
+
+    private String dbUrl = UrlContainer.getDbUrl();
     private Datastore datastore;
+
+    @Value("${dbUsername}")
+    private String username;
+
+    @Value("${dbPassword}")
+    private String password;
 
     public static MoviesDAO getInstance() {
         return ourInstance;
@@ -31,7 +39,7 @@ public class MoviesDAO {
         final Morphia morphia = new Morphia();
         morphia.mapPackage("pl.zyskowski.hybris.model");
         System.out.println("DB URL TO: " + dbUrl);
-        datastore = morphia.createDatastore(new MongoClient(new MongoClientURI(dbUrl)), "movies");
+        datastore = morphia.createDatastore(new MongoClient(new MongoClientURI(dbUrl)), "movielibrary");
         datastore.ensureIndexes();
     }
 
