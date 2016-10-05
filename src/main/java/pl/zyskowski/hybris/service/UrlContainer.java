@@ -1,25 +1,23 @@
 package pl.zyskowski.hybris.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 public class UrlContainer {
 
-    private static Boolean remoteServer = System.getenv("MONGODB_URI") != null;
-    private static String SERVER_HOST = "hybris-microservices.herokuapp.com";
-    private static String LOCAL_HOST = "localhost";
-    private static String LOCAL_PORT = "8080";
+    @Value("${SERVER_ADDRESS}")
+    private static String SERVER_ADDRESS;
+
+    @Value("${DB_ADDRESS")
+    private static String DB_ADDRESS;
 
     static public String getDbUrl() {
-        if(remoteServer) return System.getenv("MONGODB_URI");
-        else return "mongodb://" + LOCAL_HOST;
+        return DB_ADDRESS;
     }
 
     static public String getServerAddress() {
-        if (remoteServer) return SERVER_HOST;
-        else return LOCAL_HOST + ":" + LOCAL_PORT;
+        return SERVER_ADDRESS;
     }
 
     static public String getFacebookRedirect() {

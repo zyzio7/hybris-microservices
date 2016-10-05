@@ -12,6 +12,7 @@ import java.util.*;
 public class Movie  {
 
     @Id
+    @JsonIgnore
     private ObjectId id;
 
     @Property

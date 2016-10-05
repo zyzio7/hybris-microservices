@@ -6,40 +6,50 @@ import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.social.facebook.api.User;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import pl.zyskowski.hybris.model.Category;
 import pl.zyskowski.hybris.model.Movie;
 import pl.zyskowski.hybris.model.OrderBy;
-import pl.zyskowski.hybris.service.UrlContainer;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-@Service
+
+@Component
 public class MoviesDAO {
 
-    private static MoviesDAO ourInstance = new MoviesDAO();
+    @Value("${mongo.username}")
+    private String dbUsername;
+    @Value("${mongo.password}")
+    private String dbPassword;
+    @Value("${mongo.url}")
+    private String dbUrl;
+    @Value("${mongo.port}")
+    private Integer dbPort;
+    @Value("${mongo.name}")
+    private String dbName;
+    private static Datastore datastore;
 
-    private String dbUrl = UrlContainer.getDbUrl();
-    private Datastore datastore;
-
-    @Value("${dbUsername}")
-    private String username;
-
-    @Value("${dbPassword}")
-    private String password;
-
-    public static MoviesDAO getInstance() {
-        return ourInstance;
+    public MoviesDAO() {
     }
 
-    private MoviesDAO() {
+    @PostConstruct
+    private void setData() {
+        if(datastore != null)
+            return;
+
         final Morphia morphia = new Morphia();
         morphia.mapPackage("pl.zyskowski.hybris.model");
         System.out.println("DB URL TO: " + dbUrl);
-        datastore = morphia.createDatastore(new MongoClient(new MongoClientURI(dbUrl)), "movielibrary");
+        ServerAddress serverAddress = new ServerAddress(dbUrl, dbPort);
+        List<MongoCredential> credentials = new ArrayList();
+        MongoCredential credential = MongoCredential.createCredential(dbUsername, dbName, dbPassword.toCharArray());
+        credentials.add(credential);
+        datastore = morphia.createDatastore(new MongoClient(serverAddress, credentials), dbName);
         datastore.ensureIndexes();
     }
 

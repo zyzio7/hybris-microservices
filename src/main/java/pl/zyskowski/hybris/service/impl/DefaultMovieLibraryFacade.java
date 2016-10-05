@@ -14,13 +14,10 @@ import java.util.Optional;
 @Component
 public class DefaultMovieLibraryFacade implements MovieLibraryFacade {
 
-    final MoviesDAO dao;
-    final public static String MOVIE_NOT_FOUND = "Movie with title: [%s], is not persisted in database";
-
     @Autowired
-    public DefaultMovieLibraryFacade(MoviesDAO dao) {
-        this.dao = dao;
-    }
+    private MoviesDAO dao;
+
+    final public static String MOVIE_NOT_FOUND = "Movie with title: [%s], is not persisted in database";
 
     @Override
     public Movie add(final User user, final Movie movie) throws Exception {
