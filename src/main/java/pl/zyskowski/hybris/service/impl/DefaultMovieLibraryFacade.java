@@ -1,5 +1,6 @@
 package pl.zyskowski.hybris.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.facebook.api.User;
 import org.springframework.stereotype.Component;
 import pl.zyskowski.hybris.access.MoviesDAO;
@@ -13,11 +14,17 @@ import java.util.Optional;
 @Component
 public class DefaultMovieLibraryFacade implements MovieLibraryFacade {
 
-    final MoviesDAO dao = MoviesDAO.getInstance();
+    final MoviesDAO dao;
     final public static String MOVIE_NOT_FOUND = "Movie with title: [%s], is not persisted in database";
 
+    @Autowired
+    public DefaultMovieLibraryFacade(MoviesDAO dao) {
+        this.dao = dao;
+    }
+
     @Override
-    public Movie add(final Movie movie) throws Exception {
+    public Movie add(final User user, final Movie movie) throws Exception {
+        movie.setAddedBy(user.getId());
         return dao.addMovie(movie);
     }
 

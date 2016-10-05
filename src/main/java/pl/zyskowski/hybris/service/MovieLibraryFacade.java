@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface MovieLibraryFacade {
 
-    Movie add(final Movie movie) throws Exception;
+    Movie add(final User user, final Movie movie) throws Exception;
     void remove(final User user, final String title) throws Exception;
     Movie update(final String title, final Movie movie) throws Exception;
     Movie rate(final String title, User user, Double rating);

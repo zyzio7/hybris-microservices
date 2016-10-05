@@ -3,8 +3,17 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <link href="microservices.css" rel="stylesheet">
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .login-facebook-btn {
+            text-align:center;
+            display:block;
+        }
+        .access-token-info {
+            text-align:center;
+            display:block;
+        }
+    </style>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <title>Hybris</title>
 </head>
 
@@ -18,7 +27,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <a class="login-facebook-btn" href="https://www.facebook.com/dialog/oauth?client_id=${clientId}&redirect_uri=${redirectUrl}">
-                        <img src="images/FacebookButton.png" align="middle">
+                        <img src="http://www.freeiconspng.com/uploads/facebook-sign-in-button-png-26.png" align="middle">
                     </a>
                 </div>
 

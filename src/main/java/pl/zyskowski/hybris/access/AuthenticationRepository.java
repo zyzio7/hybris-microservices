@@ -32,10 +32,14 @@ public class AuthenticationRepository {
         return key;
     }
 
+    public void validateUser(final String innertoken) throws Exception {
+        getUser(innertoken);
+    }
+
     public User getUser(final String innerToken) throws Exception {
         final String authorizationToken = credentials.get(innerToken);
         if(authorizationToken == null)
-            throw new Exception("User data not stored");
+            throw new Exception("User data not stored or token has expired");
 
         Facebook facebook = new FacebookTemplate(authorizationToken);
         return facebook.userOperations().getUserProfile();

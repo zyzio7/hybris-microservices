@@ -6,6 +6,13 @@ public enum OrderBy {
 
     @Override
     public String toString() {
-        return this.name().toLowerCase();
+        switch(this) {
+            case RATING:
+                return "averageRating";
+            case CATEGORY:
+                return "category";
+            default:
+                return this.name();
+        }
     }
 }

@@ -1,24 +1,25 @@
 package pl.zyskowski.hybris.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.*;
 
 import javax.validation.constraints.Size;
+import java.text.DecimalFormat;
 import java.util.*;
 
-@Entity("movies")
+@Entity("tabela")
 public class Movie  {
 
     @Id
     private ObjectId id;
 
+//    @Size(min=3, max=50, message = "Movie title lenght must be between {min} and {max}")
     @Property
     @Indexed(unique = true)
-    @Size(min=3, max=50, message = "Movie title lenght must be between {min} and {max}")
     private String title;
 
     @Property
-    @Indexed
     private String addedBy;
 
     @Property
@@ -38,7 +39,6 @@ public class Movie  {
 
     @Property
     private Category category;
-
 
     public ObjectId getId() {
         return id;
@@ -82,12 +82,13 @@ public class Movie  {
 
     static Integer counter = 1;
     public void addRating(String userId, Double value) {
-        ratings.put(userId + (counter++), value);
+        ratings.put(userId, value);
         averageRating = calculateAverageRating();
     }
 
     private Double calculateAverageRating() {
         OptionalDouble collect = ratings.values().stream().mapToDouble(Number::doubleValue).average();
+        DecimalFormat df = new DecimalFormat();
         if(collect.isPresent())
             return collect.getAsDouble();
         else
