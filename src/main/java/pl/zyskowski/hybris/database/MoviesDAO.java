@@ -11,14 +11,12 @@ import pl.zyskowski.hybris.controller.exception.custom.resource.DatabaseExceptio
 import pl.zyskowski.hybris.controller.exception.custom.authorization.DeleteNotOwnedMovieException;
 import pl.zyskowski.hybris.controller.exception.custom.resource.MovieAlreadyExist;
 import pl.zyskowski.hybris.controller.exception.custom.resource.MovieNotFoundException;
-import pl.zyskowski.hybris.model.Category;
+import pl.zyskowski.hybris.controller.exception.custom.resource.EmptyMovieTitleException;
 import pl.zyskowski.hybris.model.Movie;
 import pl.zyskowski.hybris.model.OrderBy;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 
@@ -63,6 +61,8 @@ public class MoviesDAO {
     }
 
     public Movie addMovie(final Movie movie) {
+        if(movie.getTitle() == null)
+            throw new EmptyMovieTitleException();
         if (getMovie(movie.getTitle()) != null)
             throw new MovieAlreadyExist(movie.getTitle());
         datastore.save(movie);
@@ -79,7 +79,8 @@ public class MoviesDAO {
     }
 
     public Movie updateMovie(final Movie updatedMovie) {
-        return addMovie(updatedMovie);
+        datastore.save(updatedMovie);
+        return updatedMovie;
     }
 
     public List<Movie> getAllMovies() {

@@ -40,6 +40,7 @@ public class DefaultMovieLibraryFacade implements MovieLibraryFacade {
         Optional.ofNullable(movie.getActors()).ifPresent(e -> updatedMovie.setActors(e));
         Optional.ofNullable(movie.getDirector()).ifPresent(e -> updatedMovie.setDirector(e));
         Optional.ofNullable(movie.getCategory()).ifPresent(e -> updatedMovie.setCategory(e));
+        Optional.ofNullable(movie.getCreatedAt()).ifPresent(e -> updatedMovie.setCreatedAt(e));
         getDao().updateMovie(updatedMovie);
 
         return updatedMovie;

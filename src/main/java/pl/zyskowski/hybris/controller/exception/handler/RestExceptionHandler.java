@@ -2,6 +2,7 @@ package pl.zyskowski.hybris.controller.exception.handler;
 
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import pl.zyskowski.hybris.controller.exception.custom.authorization.*;
 import pl.zyskowski.hybris.controller.exception.custom.resource.MovieAlreadyExist;
 import pl.zyskowski.hybris.controller.exception.custom.resource.MovieNotFoundException;
+import pl.zyskowski.hybris.controller.exception.custom.resource.EmptyMovieTitleException;
 import pl.zyskowski.hybris.controller.exception.data.ExceptionData;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -46,7 +51,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = MovieNotFoundException.class)
-    public ResponseEntity<Object> handleMovieAlreadyExistException2(Exception ex){
+    public ResponseEntity<Object> handleNotFoundException(Exception ex){
+        return new ResponseEntity<>(new ExceptionData(ex), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value = EmptyMovieTitleException.class)
+    public ResponseEntity<Object> handleEmptyMovieTitleException(Exception ex){
         return new ResponseEntity<>(new ExceptionData(ex), HttpStatus.CONFLICT);
     }
 
@@ -57,7 +67,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return new ResponseEntity<>(new ExceptionData(ex), HttpStatus.BAD_REQUEST);
+        final List<String> messages = ex.getBindingResult().getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+        return new ResponseEntity<>(new ExceptionData(ex.getClass(), messages), HttpStatus.BAD_REQUEST);
     }
 
     @Override
