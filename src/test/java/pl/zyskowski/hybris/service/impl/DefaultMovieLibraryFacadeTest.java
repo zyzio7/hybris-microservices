@@ -27,9 +27,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -105,7 +103,6 @@ public class DefaultMovieLibraryFacadeTest {
 
         verify(mockedDAO).getMovie(anyString());
         verify(mockedDAO).updateMovie(any(Movie.class));
-        verify(movieLibraryFacade).getDao();
 
         assert !movie.getId().equals(updatedMovie.getId());
         assert !movie.getAddedBy().equals(updatedMovie.getAddedBy());
