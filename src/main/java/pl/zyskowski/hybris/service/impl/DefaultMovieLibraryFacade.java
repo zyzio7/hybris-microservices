@@ -3,6 +3,7 @@ package pl.zyskowski.hybris.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.facebook.api.User;
 import org.springframework.stereotype.Component;
+import pl.zyskowski.hybris.controller.exception.custom.resource.MovieNotFoundException;
 import pl.zyskowski.hybris.database.MoviesDAO;
 import pl.zyskowski.hybris.model.Movie;
 import pl.zyskowski.hybris.model.OrderBy;
@@ -17,56 +18,54 @@ public class DefaultMovieLibraryFacade implements MovieLibraryFacade {
     @Autowired
     private MoviesDAO dao;
 
-    final public static String MOVIE_NOT_FOUND = "Movie with title: [%s], is not persisted in database";
-
     @Override
-    public Movie add(final User user, final Movie movie) throws Exception {
+    public Movie add(final User user, final Movie movie) {
         movie.setAddedBy(user.getId());
-        return dao.addMovie(movie);
+        return getDao().addMovie(movie);
     }
 
     @Override
-    public void remove(final User user, final String title) throws Exception{
-        dao.remove(user, title);
+    public void remove(final User user, final String title) {
+        getDao().remove(user, title);
     }
 
     @Override
     public Movie update(final String title, final Movie movie) throws Exception {
-        final Movie updatedMovie = dao.getMovie(title);
+        final Movie updatedMovie = getDao().getMovie(title);
 
         if(updatedMovie == null)
-            throw new Exception(String.format(MOVIE_NOT_FOUND, title));
+            throw new MovieNotFoundException(title);
 
         Optional.ofNullable(movie.getTitle()).ifPresent(e -> updatedMovie.setTitle(e));
         Optional.ofNullable(movie.getActors()).ifPresent(e -> updatedMovie.setActors(e));
         Optional.ofNullable(movie.getDirector()).ifPresent(e -> updatedMovie.setDirector(e));
-        Optional.ofNullable(movie.getCreatedAt()).ifPresent(e -> updatedMovie.setCreatedAt(e));
-        dao.updateMovie(updatedMovie);
+        Optional.ofNullable(movie.getCategory()).ifPresent(e -> updatedMovie.setCategory(e));
+        getDao().updateMovie(updatedMovie);
 
         return updatedMovie;
     }
 
     @Override
-    public Movie rate(final String title, final User user, final Double rating) {
-        return dao.rateMovie(title, user, rating);
+    public Movie rate(final String title, final User user, final Integer rating) {
+        return getDao().rateMovie(title, user, rating);
     }
 
     @Override
-    public Movie get(final String title) throws Exception{
-        return Optional.ofNullable(dao.getMovie(title)).orElseThrow(() -> new Exception(String.format(MOVIE_NOT_FOUND, title)));
+    public Movie get(final String title) {
+        return getDao().getMovie(title);
     }
 
     @Override
-    public List<Movie> getAll() throws Exception {
-        return dao.getAllMovies();
+    public List<Movie> getAll() {
+        return getDao().getAllMovies();
     }
 
     @Override
-    public List<Movie> getAll(OrderBy orderBy) throws Exception {
+    public List<Movie> getAll(OrderBy orderBy) {
         if(orderBy == null)
             return getAll();
-
-        return dao.getSortedMovies(orderBy);
+        return getDao().getSortedMovies(orderBy);
     }
 
+    public MoviesDAO getDao() { return dao; }
 }

@@ -7,12 +7,15 @@ import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.social.facebook.api.User;
 import org.springframework.stereotype.Component;
+import pl.zyskowski.hybris.controller.exception.custom.resource.DatabaseException;
+import pl.zyskowski.hybris.controller.exception.custom.authorization.DeleteNotOwnedMovieException;
+import pl.zyskowski.hybris.controller.exception.custom.resource.MovieAlreadyExist;
+import pl.zyskowski.hybris.controller.exception.custom.resource.MovieNotFoundException;
 import pl.zyskowski.hybris.model.Category;
 import pl.zyskowski.hybris.model.Movie;
 import pl.zyskowski.hybris.model.OrderBy;
 
 import javax.annotation.PostConstruct;
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -39,18 +42,20 @@ public class MoviesDAO {
 
     @PostConstruct
     private void setData() {
-        if(datastore != null)
-            return;
-
-        final Morphia morphia = new Morphia();
-        morphia.mapPackage("pl.zyskowski.hybris.model");
-        System.out.println("DB URL TO: " + dbUrl);
-        ServerAddress serverAddress = new ServerAddress(dbUrl, dbPort);
-        List<MongoCredential> credentials = new ArrayList();
-        MongoCredential credential = MongoCredential.createCredential(dbUsername, dbName, dbPassword.toCharArray());
-        credentials.add(credential);
-        datastore = morphia.createDatastore(new MongoClient(serverAddress, credentials), dbName);
-        datastore.ensureIndexes();
+        try {
+            final Morphia morphia = new Morphia();
+            morphia.mapPackage("pl.zyskowski.hybris.model");
+            System.out.println("DB URL TO: " + dbUrl);
+            ServerAddress serverAddress = new ServerAddress(dbUrl, dbPort);
+            List<MongoCredential> credentials = new ArrayList();
+            MongoCredential credential = MongoCredential.createCredential(dbUsername, dbName, dbPassword.toCharArray());
+            credentials.add(credential);
+        //        datastore = morphia.createDatastore(new MongoClient(serverAddress, credentials), dbName);
+            datastore = morphia.createDatastore(new MongoClient(serverAddress), dbName);
+            datastore.ensureIndexes();
+        } catch (Exception ex) {
+            throw new DatabaseException(ex.getMessage());
+        }
     }
 
     public Movie getMovie(final String title) {
@@ -58,21 +63,25 @@ public class MoviesDAO {
         return query.get();
     }
 
-    public Movie addMovie(@Valid final Movie movie) {
+    public Movie addMovie(final Movie movie) {
+        if (getMovie(movie.getTitle()) != null)
+            throw new MovieAlreadyExist(movie.getTitle());
         datastore.save(movie);
         return movie;
     }
 
-    synchronized public void remove(final User user, final String title) throws Exception {
+    public String test(final User user, final String title) { return null; }
+
+    synchronized public void remove(final User user, final String title) {
         final Movie movie = getMovie(title);
         if (movie == null)
-            throw new Exception(String.format("Movie with title: [%s], is not persisted in database", title));
+            throw new MovieNotFoundException(title);
         if (!user.getId().equals(movie.getAddedBy()))
-            throw new Exception("Authenticated user is not an creator entry");
+            throw new DeleteNotOwnedMovieException(movie);
         datastore.delete(movie);
     }
 
-    public Movie updateMovie(@Valid final Movie updatedMovie) {
+    public Movie updateMovie(final Movie updatedMovie) {
         return addMovie(updatedMovie);
     }
 
@@ -94,7 +103,7 @@ public class MoviesDAO {
 //        datastore.save(movie);
     }
 
-    synchronized public Movie rateMovie(final String title, final User user, Double rating) {
+    synchronized public Movie rateMovie(final String title, final User user, Integer rating) {
         final Movie dbMovie = getMovie(title);
         dbMovie.addRating(user.getId(), rating);
         datastore.save(dbMovie);

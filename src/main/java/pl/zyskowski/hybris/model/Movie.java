@@ -24,7 +24,7 @@ public class Movie  {
     private String addedBy;
 
     @Property
-    private Map<String, Double> ratings = new HashMap();
+    private Map<String, Integer> ratings = new HashMap();
 
     @Property
     private Double averageRating;
@@ -57,7 +57,7 @@ public class Movie  {
         this.title = title;
     }
 
-    public Map<String, Double> getRatings() {
+    public Map<String, Integer> getRatings() {
         return ratings;
     }
 
@@ -82,7 +82,7 @@ public class Movie  {
     }
 
     static Integer counter = 1;
-    public void addRating(String userId, Double value) {
+    public void addRating(String userId, Integer value) {
         ratings.put(userId, value);
         averageRating = calculateAverageRating();
     }

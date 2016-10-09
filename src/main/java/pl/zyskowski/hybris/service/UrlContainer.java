@@ -24,7 +24,7 @@ public class UrlContainer {
         StringBuilder sb = new StringBuilder();
         sb.append("http://");
         sb.append(getServerAddress());
-        sb.append("/home");
+        sb.append('/');
         return sb.toString();
     }
 

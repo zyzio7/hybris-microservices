@@ -42,8 +42,18 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="comment">ACCESS-TOKEN:</label>
-                        <textarea disabled class="form-control user-token-textarea" rows="5" id="comment">${accesstoken}</textarea>
+                        <label form="comment">ACCESS-TOKEN:</label>
+                        <textarea disabled class="form-control user-token-textarea" rows="5">${accesstoken}</textarea>
+                    </div>
+                </c:if>
+
+                <c:if test="${not empty error}">
+                    <div>
+                        <h1>Error</h1>
+                    </div>
+                    <div class="form-group">
+                        <label form="comment">Detailed message:</label>
+                        <textarea disabled class="form-control" rows="5">${error}</textarea>
                     </div>
                 </c:if>
 
