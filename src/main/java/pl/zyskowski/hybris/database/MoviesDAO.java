@@ -69,8 +69,6 @@ public class MoviesDAO {
         return movie;
     }
 
-    public String test(final User user, final String title) { return null; }
-
     synchronized public void remove(final User user, final String title) {
         final Movie movie = getMovie(title);
         if (movie == null)
@@ -92,18 +90,10 @@ public class MoviesDAO {
         return datastore.createQuery(Movie.class).order(orderBy.toString()).asList();
     }
 
-    public void prepareTestData() {
-        Movie movie = new Movie();
-        movie.setTitle("The Green Mile");
-        movie.setCreatedAt(new Date());
-        movie.setCategory(Category.THRILLER);
-        String[] actors = new String[]{"Paul Edgecombe", "John Coffey"};
-        movie.setActors( Arrays.asList(actors));
-//        datastore.save(movie);
-    }
-
     synchronized public Movie rateMovie(final String title, final User user, Integer rating) {
         final Movie dbMovie = getMovie(title);
+        if(dbMovie == null)
+            throw new MovieNotFoundException(title);
         dbMovie.addRating(user.getId(), rating);
         datastore.save(dbMovie);
         return dbMovie;
