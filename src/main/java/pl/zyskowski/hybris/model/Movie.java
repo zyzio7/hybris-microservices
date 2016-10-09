@@ -1,6 +1,7 @@
 package pl.zyskowski.hybris.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.*;
 
@@ -9,6 +10,7 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 @Entity("movie")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Movie  {
 
     @Id
@@ -24,7 +26,7 @@ public class Movie  {
     private String addedBy;
 
     @Property
-    private Map<String, Integer> ratings = new HashMap();
+    private Map<String, Integer> ratings;
 
     @Property
     private Double averageRating;
@@ -83,6 +85,8 @@ public class Movie  {
 
     static Integer counter = 1;
     public void addRating(String userId, Integer value) {
+        if (ratings == null)
+            ratings = new HashMap<>();
         ratings.put(userId, value);
         averageRating = calculateAverageRating();
     }
