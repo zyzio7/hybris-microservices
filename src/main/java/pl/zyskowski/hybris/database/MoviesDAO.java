@@ -50,8 +50,7 @@ public class MoviesDAO {
             List<MongoCredential> credentials = new ArrayList();
             MongoCredential credential = MongoCredential.createCredential(dbUsername, dbName, dbPassword.toCharArray());
             credentials.add(credential);
-        //        datastore = morphia.createDatastore(new MongoClient(serverAddress, credentials), dbName);
-            datastore = morphia.createDatastore(new MongoClient(serverAddress), dbName);
+            datastore = morphia.createDatastore(new MongoClient(serverAddress, credentials), dbName);
             datastore.ensureIndexes();
         } catch (Exception ex) {
             throw new DatabaseException(ex.getMessage());
