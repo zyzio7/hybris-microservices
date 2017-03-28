@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.zyskowski.hybris.access.AuthenticationRepository;
 import pl.zyskowski.hybris.controller.exception.custom.resource.MovieNotFoundException;
+import pl.zyskowski.hybris.model.UserModel;
 import pl.zyskowski.hybris.service.MovieLibraryFacade;
 import pl.zyskowski.hybris.model.Movie;
 import pl.zyskowski.hybris.model.OrderBy;
@@ -44,7 +45,7 @@ public class MyRestController {
     public @ResponseBody ResponseEntity addMovie(@RequestHeader(name = "Bearer") String innerToken,
                                                         @Valid @RequestBody Movie movie)
     {
-        User user = authenticationRepository.getUser(innerToken);
+        UserModel user = authenticationRepository.getUser(innerToken);
         final Movie addedMovie = movieLibraryFacade.add(user, movie);
         return new ResponseEntity<>(addedMovie, HttpStatus.CREATED);
     }
@@ -62,7 +63,7 @@ public class MyRestController {
     @RequestMapping(value = "/delete/{title}", method = RequestMethod.DELETE)
     public ResponseEntity delete(@RequestHeader(name = "Bearer") String innerToken,
                                  @PathVariable String title) throws Exception {
-        User user = authenticationRepository.getUser(innerToken);
+        UserModel user = authenticationRepository.getUser(innerToken);
         movieLibraryFacade.remove(user, title);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -71,7 +72,7 @@ public class MyRestController {
     public ResponseEntity rate(@RequestHeader(name = "Bearer") String innerToken,
                                       @PathVariable String title,
                                       @PathVariable Integer rating) {
-        final User user = authenticationRepository.getUser(innerToken);
+        final UserModel user = authenticationRepository.getUser(innerToken);
         final Movie movie = movieLibraryFacade.rate(title, user, rating);
         return new ResponseEntity<>(movie, HttpStatus.OK);
     }

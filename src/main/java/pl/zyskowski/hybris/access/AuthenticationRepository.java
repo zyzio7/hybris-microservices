@@ -7,6 +7,7 @@ import org.springframework.social.facebook.api.impl.FacebookTemplate;
 import org.springframework.stereotype.Service;
 import pl.zyskowski.hybris.controller.exception.custom.authorization.UserDataNotStoredException;
 import pl.zyskowski.hybris.controller.exception.custom.authorization.UserNotExist;
+import pl.zyskowski.hybris.model.UserModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,13 +41,13 @@ public class AuthenticationRepository {
         new FacebookTemplate(authorizationToken);
     }
 
-    public User getUser(final String innerToken) {
+    public UserModel getUser(final String innerToken) {
         final String authorizationToken = getAuthorizationToken(innerToken);
         if(authorizationToken == null)
             throw new UserDataNotStoredException();
         try {
             final Facebook facebook = new FacebookTemplate(authorizationToken);
-            return facebook.userOperations().getUserProfile();
+            return new UserModel(facebook.userOperations().getUserProfile());
         } catch (Exception ex) {
             if (ex instanceof InvalidAuthorizationException)
                 credentials.remove(innerToken);

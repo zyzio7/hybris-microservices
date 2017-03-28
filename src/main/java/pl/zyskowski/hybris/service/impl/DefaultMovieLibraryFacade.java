@@ -20,13 +20,13 @@ public class DefaultMovieLibraryFacade implements MovieLibraryFacade {
     private MoviesDAO dao;
 
     @Override
-    public Movie add(final User user, final Movie movie) {
-        movie.setAddedBy(new UserModel(user));
+    public Movie add(final UserModel user, final Movie movie) {
+        movie.setAddedBy(user);
         return getDao().addMovie(movie);
     }
 
     @Override
-    public void remove(final User user, final String title) {
+    public void remove(final UserModel user, final String title) {
         getDao().remove(user, title);
     }
 
@@ -48,7 +48,7 @@ public class DefaultMovieLibraryFacade implements MovieLibraryFacade {
     }
 
     @Override
-    public Movie rate(final String title, final User user, final Integer rating) {
+    public Movie rate(final String title, final UserModel user, final Integer rating) {
         return getDao().rateMovie(title, user, rating);
     }
 

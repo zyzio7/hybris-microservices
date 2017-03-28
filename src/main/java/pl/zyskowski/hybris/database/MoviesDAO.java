@@ -72,7 +72,7 @@ public class MoviesDAO {
         return movie;
     }
 
-    synchronized public void remove(final User user, final String title) {
+    synchronized public void remove(final UserModel user, final String title) {
         final Movie movie = getMovie(title);
         if (movie == null)
             throw new MovieNotFoundException(title);
@@ -94,11 +94,11 @@ public class MoviesDAO {
         return datastore.createQuery(Movie.class).order(orderBy.toString()).asList();
     }
 
-    synchronized public Movie rateMovie(final String title, final User user, Integer rating) {
+    synchronized public Movie rateMovie(final String title, final UserModel user, Integer rating) {
         final Movie dbMovie = getMovie(title);
         if(dbMovie == null)
             throw new MovieNotFoundException(title);
-        RatingModel ratingModel = dbMovie.addRating(new UserModel(user), rating);
+        RatingModel ratingModel = dbMovie.addRating(user, rating);
         datastore.save(ratingModel.getUserModel());
         datastore.save(ratingModel);
         datastore.save(dbMovie);

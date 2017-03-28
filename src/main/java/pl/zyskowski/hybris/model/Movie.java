@@ -92,10 +92,6 @@ public class Movie  {
         return averageRating;
     }
 
-    private void setAverageRating(Double averageRating) {
-        this.averageRating = averageRating;
-    }
-
     public Category getCategory() {
         return category;
     }
@@ -112,13 +108,24 @@ public class Movie  {
         this.addedBy = userModel;
     }
 
-    public RatingModel addRating(UserModel user, Integer value) {
+    public RatingModel addRating(final UserModel user, final Integer value) {
         if (ratings == null)
             ratings = new ArrayList<>();
-        RatingModel ratingModel = new RatingModel(user, value);
-        ratings.add(ratingModel);
+
+        Optional<RatingModel> rating = getUserRating(user);
+        if(rating.isPresent()) {
+            rating.get().setRate(value);
+        } else {
+            rating = Optional.of(new RatingModel(user, value));
+            ratings.add(rating.get());
+        }
+
         averageRating = calculateAverageRating();
-        return ratingModel;
+        return rating.get();
+    }
+
+    private Optional<RatingModel> getUserRating(final UserModel userModel) {
+        return ratings.stream().filter(rate -> rate.getUserModel().equals(userModel)).findFirst();
     }
 
     private Double calculateAverageRating() {

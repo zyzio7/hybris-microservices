@@ -55,4 +55,14 @@ public class UserModel {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof UserModel) {
+            UserModel user = (UserModel)obj;
+            if(userId.equals(user.getUserId()))
+                return true;
+        }
+        return false;
+    }
 }

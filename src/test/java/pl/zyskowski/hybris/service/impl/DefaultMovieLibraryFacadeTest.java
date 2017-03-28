@@ -41,8 +41,8 @@ public class DefaultMovieLibraryFacadeTest {
     @Mock
     private MoviesDAO mockedDAO;
 
-    private User existingUser;
-    private User existingUser2;
+    private UserModel existingUser;
+    private UserModel existingUser2;
     private Movie existingMovie;
 
     @Before
@@ -51,8 +51,8 @@ public class DefaultMovieLibraryFacadeTest {
         when((movieLibraryFacade).getDao()).thenReturn(mockedDAO);
 
         //user1
-        existingUser = new User("11111", "Name1", "Username1", "Lastname1", "male", Locale.ENGLISH);
-        existingUser2 = new User("22222", "Name2", "Username2", "Lastname2", "male", Locale.ENGLISH);
+        existingUser = new UserModel(new User("11111", "Name1", "Username1", "Lastname1", "male", Locale.ENGLISH));
+        existingUser2 = new UserModel(new User("22222", "Name2", "Username2", "Lastname2", "male", Locale.ENGLISH));
 
         //existing movie
         existingMovie = new Movie();
@@ -61,7 +61,7 @@ public class DefaultMovieLibraryFacadeTest {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = dateFormat.parse("01/01/2010");
         existingMovie.setCreatedAt(date);
-        existingMovie.setAddedBy(new UserModel(existingUser));
+        existingMovie.setAddedBy(existingUser);
     }
 
     @Test(expected = MovieNotFoundException.class)
@@ -91,7 +91,7 @@ public class DefaultMovieLibraryFacadeTest {
 
         //should not be stored
         movie.setId(new ObjectId());
-        movie.setAddedBy(new UserModel(existingUser2));
+        movie.setAddedBy(existingUser2);
 
         //should be stored
         movie.setTitle("New title");
@@ -150,7 +150,7 @@ public class DefaultMovieLibraryFacadeTest {
         movieToAdd.setTitle("New title");
         movieLibraryFacade.add(existingUser, movieToAdd);
         verify(movieLibraryFacade).add(eq(existingUser), eq(movieToAdd));
-        assert(movieToAdd.getAddedBy().equals(existingUser.getId()));
+        assert(movieToAdd.getAddedBy().equals(existingUser));
     }
 
     @Test(expected = MovieAlreadyExist.class)
