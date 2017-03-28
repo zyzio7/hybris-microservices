@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.*;
+import org.springframework.social.facebook.api.User;
 
 import javax.validation.constraints.Size;
 import java.text.DecimalFormat;
@@ -22,11 +23,8 @@ public class Movie  {
     @Indexed(unique = true)
     private String title;
 
-    @Property
-    private String addedBy;
-
-    @Property
-    private Map<String, Integer> ratings;
+    @Reference
+    private Collection<RatingModel> ratings;
 
     @Property
     private Double averageRating;
@@ -34,7 +32,7 @@ public class Movie  {
     @Property
     private String director;
 
-    @Property
+    @Embedded
     private Collection<String> actors;
 
     @Property
@@ -42,6 +40,9 @@ public class Movie  {
 
     @Property
     private Category category;
+
+    @Reference
+    private UserModel addedBy;
 
     public ObjectId getId() {
         return id;
@@ -59,7 +60,7 @@ public class Movie  {
         this.title = title;
     }
 
-    public Map<String, Integer> getRatings() {
+    public Collection<RatingModel> getRatings() {
         return ratings;
     }
 
@@ -83,23 +84,6 @@ public class Movie  {
         return createdAt;
     }
 
-    static Integer counter = 1;
-    public void addRating(String userId, Integer value) {
-        if (ratings == null)
-            ratings = new HashMap<>();
-        ratings.put(userId, value);
-        averageRating = calculateAverageRating();
-    }
-
-    private Double calculateAverageRating() {
-        OptionalDouble collect = ratings.values().stream().mapToDouble(Number::doubleValue).average();
-        DecimalFormat df = new DecimalFormat();
-        if(collect.isPresent())
-            return collect.getAsDouble();
-        else
-            return 0.0;
-    }
-
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
@@ -120,11 +104,30 @@ public class Movie  {
         this.category = category;
     }
 
-    public String getAddedBy() {
+    public UserModel getAddedBy() {
         return addedBy;
     }
 
-    public void setAddedBy(String addedBy) {
-        this.addedBy = addedBy;
+    public void setAddedBy(UserModel userModel) {
+        this.addedBy = userModel;
     }
+
+    public RatingModel addRating(UserModel user, Integer value) {
+        if (ratings == null)
+            ratings = new ArrayList<>();
+        RatingModel ratingModel = new RatingModel(user, value);
+        ratings.add(ratingModel);
+        averageRating = calculateAverageRating();
+        return ratingModel;
+    }
+
+    private Double calculateAverageRating() {
+        OptionalDouble collect = ratings.stream().mapToDouble(RatingModel::getRate).average();
+        final DecimalFormat df = new DecimalFormat();
+        if(collect.isPresent())
+            return collect.getAsDouble();
+        else
+            return 0.0;
+    }
+
 }

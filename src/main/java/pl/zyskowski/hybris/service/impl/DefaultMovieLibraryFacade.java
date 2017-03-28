@@ -7,6 +7,7 @@ import pl.zyskowski.hybris.controller.exception.custom.resource.MovieNotFoundExc
 import pl.zyskowski.hybris.database.MoviesDAO;
 import pl.zyskowski.hybris.model.Movie;
 import pl.zyskowski.hybris.model.OrderBy;
+import pl.zyskowski.hybris.model.UserModel;
 import pl.zyskowski.hybris.service.MovieLibraryFacade;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class DefaultMovieLibraryFacade implements MovieLibraryFacade {
 
     @Override
     public Movie add(final User user, final Movie movie) {
-        movie.setAddedBy(user.getId());
+        movie.setAddedBy(new UserModel(user));
         return getDao().addMovie(movie);
     }
 
@@ -68,5 +69,5 @@ public class DefaultMovieLibraryFacade implements MovieLibraryFacade {
         return getDao().getSortedMovies(orderBy);
     }
 
-    public MoviesDAO getDao() { return dao; }
+    public MoviesDAO getDao() {  return dao; }
 }

@@ -18,6 +18,7 @@ import pl.zyskowski.hybris.controller.exception.custom.resource.MovieNotFoundExc
 import pl.zyskowski.hybris.database.MoviesDAO;
 import pl.zyskowski.hybris.model.Category;
 import pl.zyskowski.hybris.model.Movie;
+import pl.zyskowski.hybris.model.UserModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,7 +61,7 @@ public class DefaultMovieLibraryFacadeTest {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = dateFormat.parse("01/01/2010");
         existingMovie.setCreatedAt(date);
-        existingMovie.setAddedBy(existingUser.getId());
+        existingMovie.setAddedBy(new UserModel(existingUser));
     }
 
     @Test(expected = MovieNotFoundException.class)
@@ -90,7 +91,7 @@ public class DefaultMovieLibraryFacadeTest {
 
         //should not be stored
         movie.setId(new ObjectId());
-        movie.setAddedBy(existingUser2.getId());
+        movie.setAddedBy(new UserModel(existingUser2));
 
         //should be stored
         movie.setTitle("New title");

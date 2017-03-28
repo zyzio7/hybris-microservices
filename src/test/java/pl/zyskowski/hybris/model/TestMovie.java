@@ -27,27 +27,27 @@ public class TestMovie {
 
     @Test
     public void averageRatingShouldBeCalculated() {
-        movie.addRating("user1", 3);
-        movie.addRating("user2", 5);
+        movie.addRating(new UserModel("user1", "username1"), 3);
+        movie.addRating(new UserModel("user2", "username2"), 5);
         assert(equalWithPrecision(movie.getAverageRating(), 4.0));
-        movie.addRating("user3", 7);
+        movie.addRating(new UserModel("user3", "username3"), 7);
         assert(equalWithPrecision(movie.getAverageRating(), 5.0));
     }
 
     @Test
     public void sameUserShouldUpdateHisRateIfAlreadyRated() {
-        movie.addRating("user1", 3);
+        movie.addRating(new UserModel("user1", "username1"), 3);
         assert(equalWithPrecision(movie.getAverageRating(), 3.0));
-        movie.addRating("user1", 5);
+        movie.addRating(new UserModel("user1", "username1"),  5);
         assert(equalWithPrecision(movie.getAverageRating(), 5.0));
     }
 
     @Test
     public void averageRatingShouldBeUpdatedAfterUserRateChange() {
-        movie.addRating("user1", 3);
-        movie.addRating("user2", 7);
+        movie.addRating(new UserModel("user1", "username1"), 3);
+        movie.addRating(new UserModel("user2", "username1"), 7);
         assert(equalWithPrecision(movie.getAverageRating(), 5.0));
-        movie.addRating("user1", 5);
+        movie.addRating(new UserModel("user1", "username1"), 5);
         assert(equalWithPrecision(movie.getAverageRating(), 6.0));
     }
 

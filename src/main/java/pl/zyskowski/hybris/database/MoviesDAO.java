@@ -14,6 +14,8 @@ import pl.zyskowski.hybris.controller.exception.custom.resource.MovieNotFoundExc
 import pl.zyskowski.hybris.controller.exception.custom.resource.EmptyMovieTitleException;
 import pl.zyskowski.hybris.model.Movie;
 import pl.zyskowski.hybris.model.OrderBy;
+import pl.zyskowski.hybris.model.RatingModel;
+import pl.zyskowski.hybris.model.UserModel;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -65,6 +67,7 @@ public class MoviesDAO {
             throw new EmptyMovieTitleException();
         if (getMovie(movie.getTitle()) != null)
             throw new MovieAlreadyExist(movie.getTitle());
+        datastore.save(movie.getAddedBy());
         datastore.save(movie);
         return movie;
     }
@@ -95,7 +98,9 @@ public class MoviesDAO {
         final Movie dbMovie = getMovie(title);
         if(dbMovie == null)
             throw new MovieNotFoundException(title);
-        dbMovie.addRating(user.getId(), rating);
+        RatingModel ratingModel = dbMovie.addRating(new UserModel(user), rating);
+        datastore.save(ratingModel.getUserModel());
+        datastore.save(ratingModel);
         datastore.save(dbMovie);
         return dbMovie;
     }

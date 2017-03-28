@@ -28,5 +28,4 @@ public class UrlContainer {
         return sb.toString();
     }
 
-    private UrlContainer(){};
 }
